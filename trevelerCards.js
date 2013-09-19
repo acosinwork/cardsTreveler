@@ -16,15 +16,15 @@ cards{
 
 }
 
-var card(startCity, endCity, transportType, travelInfo) {
-    var propStartCity = startCity;
-    var propEndCity = endCity;
+var card(startTown, endTown, transportType, travelInfo) {
+    var propStartTown = startTown;
+    var propEndTown = endTown;
     var propTransportType = transportType;
     var propTravelInfo = travelInfo;
 }
 
-function funcAdd(startCity, endCity, transportType, travelInfo) {
-    var currentCard = new card(startCity, endCity,transportType,travelInfo);
+function funcAdd(startTown, endTown, transportType, travelInfo) {
+    var currentCard = new card(startTown, endTown, transportType, travelInfo);
 
     return currentCard;
 
@@ -32,5 +32,29 @@ function funcAdd(startCity, endCity, transportType, travelInfo) {
 
 function funcSort(arrCards) {
     var sortedCards = arrCards;
+    var sortedCardsLength = arrCards.length();
+    for (var i=sortedCardsLength; i>0; i--) {
+        //node
+        // sortedCards[i];
+    }
     return true;
+}
+
+var node(intTownNumber) {
+    TownNumber = intTownNumber;
+    nextNode = null;
+    nextSortedChildNode = null;
+// TODO ctach this: prewiousTown = undefined;
+}
+
+var NodeList {
+    var nodeCount = 0;
+    addNode (townNumber, setNextNode) {
+        var currentNode = new node(newNode);
+        ++nodeCount;
+        if (setNextNode !== undefined) {
+            currentNode.nextNode() = setNextNode;
+        }
+
+    }
 }
