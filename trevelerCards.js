@@ -33,23 +33,31 @@ function funcAdd(startTown, endTown, transportType, travelInfo) {
 function funcSort(arrCards) {
     var sortedCards = arrCards;
     var sortedCardsLength = arrCards.length();
-    for (var i=sortedCardsLength; i>0; i--) {
+    var townList= new nodeList;
+    var currentNode = new node;
+
+    for (var i=sortedCardsLength-1; i>=0; i--) {
+        currentNode.townNumber = i;
+      //  currentNode.
+//        townList.townNumber = i
+
+
         //node
         // sortedCards[i];
     }
     return true;
 }
 
-var node(intTownNumber) {
-    TownNumber = intTownNumber;
-    nextNode = null;
-    nextSortedChildNode = null;
+var node {
+    var townNumber: null;
+    var nextNode: null;
+    var nextSortedChildNode: null;
 // TODO ctach this: prewiousTown = undefined;
 }
 
-var NodeList {
+function addNode(nodeList) {
     var nodeCount = 0;
-    addNode (townNumber, setNextNode) {
+    newNode(townNumber, setNextNode) {
         var currentNode = new node(newNode);
         ++nodeCount;
         if (setNextNode !== undefined) {
@@ -58,3 +66,12 @@ var NodeList {
 
     }
 }
+
+var nodeList {
+    var firstNode: new node;
+
+    var count: null;
+
+}
+
+
