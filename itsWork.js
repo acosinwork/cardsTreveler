@@ -23,42 +23,53 @@ var TravelCadrs = function() {
     }
 
     this.sort = function() {
+        var wasSavedInThread;
+        var srtLength=0;
+        var cbIndex;
+        var srtIndex;
+        var currThreadInd;
+        var foundedThreadInd
+
         var srtCards = [];
+        var sortedCardBox = [];
+        var srtdStartThread = [];
+        var srtdEndThread =  [];
+
         var crdBox = this.cardsBox;
-        var inThread;
-
         var cbLength = crdBox.length;
-        var srtLength;
 
-        //console.log(crdBox);
+        var saveInThread = function (cardBoxIndex, sortedCardsIndex) {
+
+            if (crdBox[cardBoxIndex].startTown == srtCards[sortedCardsIndex].endTown) {
+                srtCards[sortedCardsIndex].endTown = crdBox[cardBoxIndex].endTown;
+                srtCards[sortedCardsIndex].srtdEndThread.push(crdBox[cardBoxIndex]);
+                return true;
+
+            } else if (crdBox[cardBoxIndex].endTown == srtCards[sortedCardsIndex].startTown) {
+                srtCards[sortedCardsIndex].startTown = crdBox[cardBoxIndex].startTown;
+                srtCards[sortedCardsIndex].srtdStartThread.push(crdBox[cardBoxIndex]);
+                return true;
+
+            } else {
+                return false;
+            }
+        }
 
         for (cbIndex = 0; cbIndex < cbLength; cbIndex++) {
-            inThread=false;
+
+            wasSavedInThread=false;
             for (srtIndex=0; srtIndex < srtLength; srtIndex++) {
 
-                // towns order in srtdEndThread - for first to last
-                if (crdBox[cbIndex].startTown == srtCards[srtIndex].endTown) {
-                    srtCards[srtIndex].endTown = crdBox[cbIndex].endTown;
-                    srtCards[srtIndex].srtdEndThread.push(crdBox[cbIndex]);
-                    inThread = true;
-                    break;
-                } else if (crdBox[cbIndex].endTown == srtCards[srtIndex].startTown) {
-                    srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
-                    srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
-                    inThread = true;
+                if (wasSavedInThread = saveInThread(cbIndex, srtIndex)) {
                     break;
                 }
+
             }
 
-            if (!inThread) {
-                var srtdEndThread =  [];
+            if (!wasSavedInThread) {
                 srtdEndThread.push(crdBox[cbIndex]);
-                var startTown = crdBox[cbIndex].startTown;
-                var endTown = crdBox[cbIndex].endTown;
-
-                var srtdStartThread = [];
                 srtLength = srtCards.push(
-                    {startTown : startTown, endTown : endTown,
+                    {startTown : crdBox[cbIndex].startTown, endTown : crdBox[cbIndex].endTown,
                     srtdStartThread : srtdStartThread , srtdEndThread : srtdEndThread});
             }
         }
@@ -82,10 +93,8 @@ var TravelCadrs = function() {
 
             }
         }
-        showSortedThreads(srtCards);
-        console.log(srtCards);
-
-        var sortedCardBox = [];
+        // showSortedThreads(srtCards);
+        //console.log(srtCards);
 
         while (srtCards.threadOrder !== undefined) {
             for (sortedCardInd = srtCards[srtCards.threadOrder].srtdStartThread.length-1;
@@ -106,20 +115,29 @@ var TravelCadrs = function() {
 
         this.cardsBox = sortedCardBox;
 
+        //consoleShowWay(sortedCardBox);
+        //console.log(srtCards);
+    }
 
-
-        consoleShowWay(sortedCardBox);
-        console.log(srtCards);
+    this.takeCards_And_GiveMeTravel = function (thisIsFullCardsBox) {
+        //TODO How use typeof and []? I'm shure, user take him array!:)
+        if (thisIsFullCardsBox !== undefined) {
+            this.cardsBox = thisIsFullCardsBox;
+        } else if (this.cardsBox.length==0) {
+            console.log("cardsBox is empty");
+            break;
+        }
+        // ok, now i'm shure, that we need use current cardsBox
+        this.sort();
 
     }
 
+
+
+
 }
 
-//function sort(cardArray) {
-//    var sortedCards = [];
-//    var allCards =
-//}
-
+/* USE Section*/
 var cards = new TravelCadrs();
 
 
@@ -139,15 +157,7 @@ cards.add( "Oslo", "Irkutsk");
 cards.add( "Miami", "defaultCity");
 cards.add( "defaultCity", "Vladimir");
 
-
-
-//cards.add( "Vladimir", "Leningrad");
-
-
-
 cards.sort();
-
-//var aaa = new cards();
 
 console.log(cards.cardsBox);
 
@@ -155,12 +165,12 @@ console.log(cards.cardsBox);
 /* TEST Section*/
 function showSortedThreads(sCards) {
     var srtCards = sCards;
-    for (i=0; i<srtCards.length; i++) {
+    for (var i=0; i<srtCards.length; i++) {
         console.log("start - "+srtCards[i].startTown + " -- end - " + srtCards[i].endTown);
         console.log("first way:");
 
         // from end to start
-        for (y=srtCards[i].srtdStartThread.length-1; y >= 0; y--) {
+        for (var y=srtCards[i].srtdStartThread.length-1; y >= 0; y--) {
             var towns=srtCards[i].srtdStartThread[y];
             console.log(y + ": " + srtCards[i].srtdStartThread[y].startTown + " - " + srtCards[i].srtdStartThread[y].endTown);
         }
@@ -175,7 +185,7 @@ function showSortedThreads(sCards) {
 
 function consoleShowWay(scards) {
     var sortedCard = scards;
-    for (i=0; i<sortedCard.length; i++) {
+    for (var i=0; i<sortedCard.length; i++) {
         console.log(sortedCard[i].startTown + " - " + sortedCard[i].endTown);
     }
 
