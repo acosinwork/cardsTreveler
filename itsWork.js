@@ -25,39 +25,61 @@ var TravelCadrs = function() {
     this.sort = function() {
         var srtCards = [];
         var crdBox = this.cardsBox;
-        var inThread = false;
+        var inThread;
+
+        var cbLength = crdBox.length;
+        var srtLength;
 
         //console.log(crdBox);
 
-        for (cbIndex = 0; cbIndex < crdBox.length; cbIndex++) {
-            for (srtIndex=0; srtIndex < srtCards.length; srtIndex++) {
+        for (cbIndex = 0; cbIndex < cbLength; cbIndex++) {
+            inThread=false;
+            for (srtIndex=0; srtIndex < srtLength; srtIndex++) {
 
+                // towns order in srtdEndThread - for first to last
                 if (crdBox[cbIndex].startTown == srtCards[srtIndex].endTown) {
                     srtCards[srtIndex].endTown = crdBox[cbIndex].endTown;
-                    //TODO srtdThread
-                    srtCards[srtIndex].srtdThread.push(crdBox[cbIndex]);
+                    srtCards[srtIndex].srtdEndThread.push(crdBox[cbIndex]);
                     inThread = true;
                     break;
+                } else {
+                    // towns order in srtdStartThread - for last to first
+                    if (crdBox[cbIndex].endTown == srtCards[srtIndex].startTown) {
+                        srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
+                        srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
+                        inThread = true;
+                        break;
+                    }
                 }
             }
 
             if (!inThread) {
-                var srtdThread =  [];
-                srtdThread.push(crdBox[cbIndex]);
+                var srtdEndThread =  [];
+                srtdEndThread.push(crdBox[cbIndex]);
                 var startTown = crdBox[cbIndex].startTown;
                 var endTown = crdBox[cbIndex].endTown;
-
-                srtCards.push({startTown : startTown, endTown : endTown, srtdThread : srtdThread});
+                
+                var srtdStartThread = [];
+                srtLength=srtCards.push(
+                    {startTown : startTown, endTown : endTown,
+                    srtdStartThread : srtdStartThread , srtdEndThread : srtdEndThread});
             }
         }
         //TEST
         for (i=0; i<srtCards.length; i++) {
             console.log("start - "+srtCards[i].startTown + " -- end - " + srtCards[i].endTown);
-            console.log("way:");
-            for (y=0; y < srtCards[i].srtdThread.length; y++) {
-                var towns=srtCards[i].srtdThread[y];
-//                console.log(towns.startTown);
-                console.log(y + ": " + srtCards[i].srtdThread[y].startTown + " - " + srtCards[i].srtdThread[y].endTown);
+            console.log("first way:");
+
+            // from end to start
+            for (y=srtCards[i].srtdStartThread.length-1; y >= 0; y--) {
+                var towns=srtCards[i].srtdStartThread[y];
+                console.log(y + ": " + srtCards[i].srtdStartThread[y].startTown + " - " + srtCards[i].srtdStartThread[y].endTown);
+            }
+            console.log("second way:");
+            // from start to end
+            for (y=0; y < srtCards[i].srtdEndThread.length; y++) {
+                var towns=srtCards[i].srtdEndThread[y];
+                console.log(y + ": " + srtCards[i].srtdEndThread[y].startTown + " - " + srtCards[i].srtdEndThread[y].endTown);
             }
 
         }
@@ -83,6 +105,11 @@ cards.cardAdd(ccard);
 cards.add("Leningrad","Moscow","train", "seat 48A");
 cards.add("London","Oslo", "airport bus");
 cards.add("Kiev","London","fly", "seat 48A");
+cards.add( "Vladimir", "Leningrad");
+cards.add( "Oslo", "Irkutsk");
+//cards.add( "Vladimir", "Leningrad");
+
+
 
 cards.sort();
 
