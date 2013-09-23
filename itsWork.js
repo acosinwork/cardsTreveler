@@ -42,14 +42,11 @@ var TravelCadrs = function() {
                     srtCards[srtIndex].srtdEndThread.push(crdBox[cbIndex]);
                     inThread = true;
                     break;
-                } else {
-                    // towns order in srtdStartThread - for last to first
-                    if (crdBox[cbIndex].endTown == srtCards[srtIndex].startTown) {
-                        srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
-                        srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
-                        inThread = true;
-                        break;
-                    }
+                } else if (crdBox[cbIndex].endTown == srtCards[srtIndex].startTown) {
+                    srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
+                    srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
+                    inThread = true;
+                    break;
                 }
             }
 
@@ -58,13 +55,56 @@ var TravelCadrs = function() {
                 srtdEndThread.push(crdBox[cbIndex]);
                 var startTown = crdBox[cbIndex].startTown;
                 var endTown = crdBox[cbIndex].endTown;
-                
+
                 var srtdStartThread = [];
-                srtLength=srtCards.push(
+                srtLength = srtCards.push(
                     {startTown : startTown, endTown : endTown,
                     srtdStartThread : srtdStartThread , srtdEndThread : srtdEndThread});
             }
         }
+        // sorting threads
+        for (currThreadInd = 0; currThreadInd < srtLength-1; currThreadInd++) {
+            srtCards.threadOrder = 0;
+            for (foundedThreadInd = currThreadInd+1; foundedThreadInd < srtLength; foundedThreadInd++) {
+
+                if (srtCards[currThreadInd].startTown == srtCards[foundedThreadInd].endTown) {
+
+                    srtCards[currThreadInd].previousThread = foundedThreadInd;
+                    srtCards[foundedThreadInd].nextThread = currThreadInd;
+                    srtCards.threadOrder = foundedThreadInd;
+
+                } else if (srtCards[currThreadInd].endTown == srtCards[foundedThreadInd].startTown) {
+
+                    srtCards[currThreadInd].nextThread = foundedThreadInd;
+                    srtCards[foundedThreadInd].previousThread = currThreadInd;
+                }
+
+            }
+        }
+
+        var sortedCardBox = [];
+
+        while (srtCards.threadOrder !== undefined) {
+            for (sortedCardInd = srtCards[srtCards.threadOrder].srtdStartThread.length-1;
+                              sortedCardInd >= 0;
+                              sortedCardInd--) {
+
+                sortedCardBox.push(srtCards[srtCards.threadOrder].srtdStartThread[sortedCardInd]);
+            }
+            for (sortedCardInd = 0;
+                 sortedCardInd < srtCards[srtCards.threadOrder].srtdEndThread.length;
+                 sortedCardInd++) {
+
+                sortedCardBox.push(srtCards[srtCards.threadOrder].srtdEndThread[sortedCardInd]);
+            }
+            srtCards.threadOrder = srtCards[srtCards.threadOrder].nextThread;
+            
+        }
+
+        this.cardsBox = sortedCardBox;
+
+        /*
+
         //TEST
         for (i=0; i<srtCards.length; i++) {
             console.log("start - "+srtCards[i].startTown + " -- end - " + srtCards[i].endTown);
@@ -82,8 +122,9 @@ var TravelCadrs = function() {
                 console.log(y + ": " + srtCards[i].srtdEndThread[y].startTown + " - " + srtCards[i].srtdEndThread[y].endTown);
             }
 
-        }
+        } */
 
+        console.log(sortedCardBox);
         console.log(srtCards);
 
     }
@@ -107,6 +148,11 @@ cards.add("London","Oslo", "airport bus");
 cards.add("Kiev","London","fly", "seat 48A");
 cards.add( "Vladimir", "Leningrad");
 cards.add( "Oslo", "Irkutsk");
+//не попадет в отсортированную ветку
+cards.add( "Oslo", "Miami");
+cards.add( "Miami", "Irkutsk");
+
+
 //cards.add( "Vladimir", "Leningrad");
 
 
@@ -115,5 +161,5 @@ cards.sort();
 
 //var aaa = new cards();
 
-console.log(cards.cardsBox);
+//console.log(cards.cardsBox);
 
