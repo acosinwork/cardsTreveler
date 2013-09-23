@@ -71,6 +71,7 @@ var TravelCadrs = function() {
 
                     srtCards[currThreadInd].previousThread = foundedThreadInd;
                     srtCards[foundedThreadInd].nextThread = currThreadInd;
+
                     srtCards.threadOrder = foundedThreadInd;
 
                 } else if (srtCards[currThreadInd].endTown == srtCards[foundedThreadInd].startTown) {
@@ -81,6 +82,8 @@ var TravelCadrs = function() {
 
             }
         }
+        showSortedThreads(srtCards);
+        console.log(srtCards);
 
         var sortedCardBox = [];
 
@@ -92,39 +95,20 @@ var TravelCadrs = function() {
                 sortedCardBox.push(srtCards[srtCards.threadOrder].srtdStartThread[sortedCardInd]);
             }
             for (sortedCardInd = 0;
-                 sortedCardInd < srtCards[srtCards.threadOrder].srtdEndThread.length;
-                 sortedCardInd++) {
+                              sortedCardInd < srtCards[srtCards.threadOrder].srtdEndThread.length;
+                              sortedCardInd++) {
 
                 sortedCardBox.push(srtCards[srtCards.threadOrder].srtdEndThread[sortedCardInd]);
             }
             srtCards.threadOrder = srtCards[srtCards.threadOrder].nextThread;
-            
+
         }
 
         this.cardsBox = sortedCardBox;
 
-        /*
 
-        //TEST
-        for (i=0; i<srtCards.length; i++) {
-            console.log("start - "+srtCards[i].startTown + " -- end - " + srtCards[i].endTown);
-            console.log("first way:");
 
-            // from end to start
-            for (y=srtCards[i].srtdStartThread.length-1; y >= 0; y--) {
-                var towns=srtCards[i].srtdStartThread[y];
-                console.log(y + ": " + srtCards[i].srtdStartThread[y].startTown + " - " + srtCards[i].srtdStartThread[y].endTown);
-            }
-            console.log("second way:");
-            // from start to end
-            for (y=0; y < srtCards[i].srtdEndThread.length; y++) {
-                var towns=srtCards[i].srtdEndThread[y];
-                console.log(y + ": " + srtCards[i].srtdEndThread[y].startTown + " - " + srtCards[i].srtdEndThread[y].endTown);
-            }
-
-        } */
-
-        console.log(sortedCardBox);
+        consoleShowWay(sortedCardBox);
         console.log(srtCards);
 
     }
@@ -143,14 +127,18 @@ var ccard = {startTown : "Moscow", endTown : "Kiev"};
 
 cards.cardAdd(ccard);
 
+cards.add( "Vologda", "Miami");
+
 cards.add("Leningrad","Moscow","train", "seat 48A");
 cards.add("London","Oslo", "airport bus");
 cards.add("Kiev","London","fly", "seat 48A");
 cards.add( "Vladimir", "Leningrad");
 cards.add( "Oslo", "Irkutsk");
 //не попадет в отсортированную ветку
-cards.add( "Oslo", "Miami");
-cards.add( "Miami", "Irkutsk");
+
+cards.add( "Miami", "defaultCity");
+cards.add( "defaultCity", "Vladimir");
+
 
 
 //cards.add( "Vladimir", "Leningrad");
@@ -161,5 +149,34 @@ cards.sort();
 
 //var aaa = new cards();
 
-//console.log(cards.cardsBox);
+console.log(cards.cardsBox);
 
+
+/* TEST Section*/
+function showSortedThreads(sCards) {
+    var srtCards = sCards;
+    for (i=0; i<srtCards.length; i++) {
+        console.log("start - "+srtCards[i].startTown + " -- end - " + srtCards[i].endTown);
+        console.log("first way:");
+
+        // from end to start
+        for (y=srtCards[i].srtdStartThread.length-1; y >= 0; y--) {
+            var towns=srtCards[i].srtdStartThread[y];
+            console.log(y + ": " + srtCards[i].srtdStartThread[y].startTown + " - " + srtCards[i].srtdStartThread[y].endTown);
+        }
+        console.log("second way:");
+        // from start to end
+        for (y=0; y < srtCards[i].srtdEndThread.length; y++) {
+            var towns=srtCards[i].srtdEndThread[y];
+            console.log(y + ": " + srtCards[i].srtdEndThread[y].startTown + " - " + srtCards[i].srtdEndThread[y].endTown);
+        }
+    }
+}
+
+function consoleShowWay(scards) {
+    var sortedCard = scards;
+    for (i=0; i<sortedCard.length; i++) {
+        console.log(sortedCard[i].startTown + " - " + sortedCard[i].endTown);
+    }
+
+}
