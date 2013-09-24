@@ -5,7 +5,7 @@
  * Time: 23:52
  * To change this template use File | Settings | File Templates.
  */
-
+/*
 cards{
     var arrCards = [];
     add = arrCards.push(funcAdd());
@@ -74,4 +74,4 @@ var nodeList {
 
 }
 
-
+   */
