@@ -6,18 +6,24 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var TravelCadrs = function() {
+var TravelCadrs = function(please) {
     this.cardsBox=[];
+    //if plesure
+    this.please = false;
+    if (please) {
+        this.please = please;
+    };
 
     this.cardAdd = function (newCard) {
         this.cardsBox.push(newCard)
     }
 
-    this.add = function (startTown, endTown, transportType, travelInfo) {
+    this.add = function (startTown, endTown, transportType, transportInfo, travelInfo) {
         var newCard ={};
         newCard.startTown = startTown;
         newCard.endTown = endTown;
         newCard.transportType = transportType;
+        newCard.transportInfo = transportInfo;
         newCard.travelInfo = travelInfo;
         cards.cardAdd(newCard);
     }
@@ -32,13 +38,13 @@ var TravelCadrs = function() {
 
         var srtCards = [];
         var sortedCardBox = [];
-        var srtdStartThread = [];
-        var srtdEndThread =  [];
+       // var srtdStartThread = [];
+       // var srtdEndThread =  [];
 
         var crdBox = this.cardsBox;
         var cbLength = crdBox.length;
 
-        var saveInThread = function (cardBoxIndex, sortedCardsIndex) {
+        /* var saveInThread = function (cardBoxIndex, sortedCardsIndex) {
 
             if (crdBox[cardBoxIndex].startTown == srtCards[sortedCardsIndex].endTown) {
                 srtCards[sortedCardsIndex].endTown = crdBox[cardBoxIndex].endTown;
@@ -53,29 +59,39 @@ var TravelCadrs = function() {
             } else {
                 return false;
             }
-        }
+        } */
 
-        for (cbIndex = 0; cbIndex < cbLength; cbIndex++) {
+
+        for (cbIndex = 0; cbIndex < crdBox.length; cbIndex++) {
 
             wasSavedInThread=false;
-            for (srtIndex=0; srtIndex < srtLength; srtIndex++) {
+            for (srtIndex=0; srtIndex < srtCards.length; srtIndex++) {
 
-                if (wasSavedInThread = saveInThread(cbIndex, srtIndex)) {
+                if (crdBox[cbIndex].startTown == srtCards[srtIndex].endTown) {
+                    srtCards[srtIndex].endTown = crdBox[cbIndex].endTown;
+                    srtCards[srtIndex].srtdEndThread.push(crdBox[cbIndex]);
+                    wasSavedInThread = true;
+                    break;
+                } else if (crdBox[cbIndex].endTown == srtCards[srtIndex].startTown) {
+
+                    srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
+                    srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
+                    wasSavedInThread = true;
                     break;
                 }
-
             }
 
             if (!wasSavedInThread) {
-                srtdEndThread.push(crdBox[cbIndex]);
                 srtLength = srtCards.push(
                     {startTown : crdBox[cbIndex].startTown, endTown : crdBox[cbIndex].endTown,
-                    srtdStartThread : srtdStartThread , srtdEndThread : srtdEndThread});
+                    srtdStartThread : [] , srtdEndThread : [crdBox[cbIndex]]});
+
             }
         }
-        // sorting threads
+
+        srtCards.threadOrder = 0;
         for (currThreadInd = 0; currThreadInd < srtLength-1; currThreadInd++) {
-            srtCards.threadOrder = 0;
+
             for (foundedThreadInd = currThreadInd+1; foundedThreadInd < srtLength; foundedThreadInd++) {
 
                 if (srtCards[currThreadInd].startTown == srtCards[foundedThreadInd].endTown) {
@@ -93,8 +109,6 @@ var TravelCadrs = function() {
 
             }
         }
-        // showSortedThreads(srtCards);
-        //console.log(srtCards);
 
         while (srtCards.threadOrder !== undefined) {
             for (sortedCardInd = srtCards[srtCards.threadOrder].srtdStartThread.length-1;
@@ -114,22 +128,101 @@ var TravelCadrs = function() {
         }
 
         this.cardsBox = sortedCardBox;
-
-        //consoleShowWay(sortedCardBox);
-        //console.log(srtCards);
     }
 
     this.takeCards_And_GiveMeTravel = function (thisIsFullCardsBox) {
+
+        var travelText = [];
+
         //TODO How use typeof and []? I'm shure, user take him array!:)
         if (thisIsFullCardsBox !== undefined) {
             this.cardsBox = thisIsFullCardsBox;
         } else if (this.cardsBox.length==0) {
             console.log("cardsBox is empty");
-            break;
+            return (["cardsBox is empty"]);
         }
         // ok, now i'm shure, that we need use current cardsBox
         this.sort();
 
+
+
+        for (var i = 0; i<this.cardsBox.length; i++) {
+
+            travelText.push(this.getTextCard(this.cardsBox[i]));
+        }
+
+        return travelText;
+
+    }
+
+    this.order = {};
+
+    this.transportOrder = function (transportToOrder) {
+
+        for (var transport in transportToOrder) {
+            this.order[transport] = transportToOrder[transport];
+        }
+
+    }
+
+
+    this.getTextCard = function (card) {
+        var currentCard = card;
+
+        for (var property in card) {
+     //       console.log(card[property]);
+            if (card[property] == undefined) {
+                card[property] = '';
+            }
+     //       console.log(card[property]);
+        }
+
+        if (card.transportType=="") {
+            card.transportType="something, you know what,";
+        }
+
+        var isHave = function (prop) {
+            if (prop!="") {
+
+                return (" "+prop);
+            } else {
+                return "";
+            }
+        }
+
+        var text = "Take " + card.transportType + isHave(card.transportInfo) + " from "
+            + card.startTown + " to " + card.endTown + "." + isHave(card.travelInfo);
+
+        for (var wordOrder in this.order) {
+            if (currentCard.transportType==wordOrder) {
+                switch (this.order[wordOrder]) {
+                    case 0: {
+                        break;
+                    }
+                    case 1: {
+                        text = "From " + card.startTown + ", take " + card.transportType + isHave(card.transportInfo)
+                            + " to " + card.endTown+"."+ isHave(card.travelInfo);
+
+                        break;
+                    }
+                    case 2: {
+                        text = "From " + card.startTown + " to " + card.endTown
+                            + ", take " + card.transportType + isHave(card.transportInfo)+"."+ isHave(card.travelInfo);
+
+                        break;
+                    }
+
+                }
+            }
+        }
+
+        var plesure = "";
+        if (this.please) {
+            //smile makes me happy
+            text=text + " :)";
+        }
+
+        return text;
     }
 
 
@@ -139,17 +232,24 @@ var TravelCadrs = function() {
 
 /* USE Section*/
 var cards = new TravelCadrs();
+/*
+cards.add("3", "4");
+cards.add("5", "6");
+cards.add("4", "5");
+cards.add("0", "1");
+cards.add("2", "3");
+cards.add("1", "2");
 
-
+*/
 var ccard = {startTown : "Moscow", endTown : "Kiev"};
 
 cards.cardAdd(ccard);
 
 cards.add( "Vologda", "Miami");
 
-cards.add("Leningrad","Moscow","train", "seat 48A");
+cards.add("Leningrad","Moscow","train", "48A", "Seat 28. Baggage Drop gate 40");
 cards.add("London","Oslo", "airport bus");
-cards.add("Kiev","London","fly", "seat 48A");
+cards.add("Kiev","London","fly", "s98","Passengers are dangerous");
 cards.add( "Vladimir", "Leningrad");
 cards.add( "Oslo", "Irkutsk");
 //не попадет в отсортированную ветку
@@ -159,10 +259,17 @@ cards.add( "defaultCity", "Vladimir");
 
 cards.sort();
 
-console.log(cards.cardsBox);
+//console.log(cards.cardsBox);
+//cards.transportOrder({train : 2});
+//cards.transportOrder({fly : 1});
+cards.transportOrder({fly : 1, train : 2});
+
+
+console.log(cards.takeCards_And_GiveMeTravel());
 
 
 /* TEST Section*/
+
 function showSortedThreads(sCards) {
     var srtCards = sCards;
     for (var i=0; i<srtCards.length; i++) {
