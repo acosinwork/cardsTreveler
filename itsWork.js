@@ -12,10 +12,10 @@ var TravelCadrs = function(please) {
     this.please = false;
     if (please) {
         this.please = please;
-    };
+    }
 
     this.cardAdd = function (newCard) {
-        this.cardsBox.push(newCard)
+        this.cardsBox.push(newCard);
     }
 
     this.add = function (startTown, endTown, transportType, transportInfo, travelInfo) {
@@ -38,13 +38,11 @@ var TravelCadrs = function(please) {
 
         var srtCards = [];
         var sortedCardBox = [];
-       // var srtdStartThread = [];
-       // var srtdEndThread =  [];
 
         var crdBox = this.cardsBox;
         var cbLength = crdBox.length;
 
-        /* var saveInThread = function (cardBoxIndex, sortedCardsIndex) {
+        /* var saveCardInThread = function (cardBoxIndex, sortedCardsIndex) {
 
             if (crdBox[cardBoxIndex].startTown == srtCards[sortedCardsIndex].endTown) {
                 srtCards[sortedCardsIndex].endTown = crdBox[cardBoxIndex].endTown;
@@ -61,31 +59,43 @@ var TravelCadrs = function(please) {
             }
         } */
 
+        function addEndPointToDownThread () {
+            if (crdBox[cbIndex].startTown !== srtCards[srtIndex].endTown) {
+                return false;
+            } else {
+                srtCards[srtIndex].endTown = crdBox[cbIndex].endTown;
+                srtCards[srtIndex].srtdEndThread.push(crdBox[cbIndex]);
+                return true;
+            }
+        }
+        function addStartPointToUpThread () {
+            if (crdBox[cbIndex].endTown !== srtCards[srtIndex].startTown) {
+                return false;
+            } else {
+                srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
+                srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
+                return true;
+            }
+        }
+
+
+
 
         for (cbIndex = 0; cbIndex < crdBox.length; cbIndex++) {
 
             wasSavedInThread=false;
             for (srtIndex=0; srtIndex < srtCards.length; srtIndex++) {
 
-                if (crdBox[cbIndex].startTown == srtCards[srtIndex].endTown) {
-                    srtCards[srtIndex].endTown = crdBox[cbIndex].endTown;
-                    srtCards[srtIndex].srtdEndThread.push(crdBox[cbIndex]);
-                    wasSavedInThread = true;
-                    break;
-                } else if (crdBox[cbIndex].endTown == srtCards[srtIndex].startTown) {
-
-                    srtCards[srtIndex].startTown = crdBox[cbIndex].startTown;
-                    srtCards[srtIndex].srtdStartThread.push(crdBox[cbIndex]);
-                    wasSavedInThread = true;
+                if (wasSavedInThread = (addEndPointToDownThread())||(addStartPointToUpThread())) {
                     break;
                 }
+
             }
 
             if (!wasSavedInThread) {
                 srtLength = srtCards.push(
                     {startTown : crdBox[cbIndex].startTown, endTown : crdBox[cbIndex].endTown,
                     srtdStartThread : [] , srtdEndThread : [crdBox[cbIndex]]});
-
             }
         }
 
@@ -156,7 +166,6 @@ var TravelCadrs = function(please) {
     }
 
     this.order = {};
-
     this.transportOrder = function (transportToOrder) {
 
         for (var transport in transportToOrder) {
@@ -168,19 +177,18 @@ var TravelCadrs = function(please) {
 
     this.getTextCard = function (card) {
         var currentCard = card;
-
-        for (var property in card) {
-     //       console.log(card[property]);
-            if (card[property] == undefined) {
-                card[property] = '';
+        var text;
+        var checkRequiredFields = function () {
+            if (currentCard.transportType == undefined) {
+                currentCard.transportType="something (you know what i mean)";
             }
-     //       console.log(card[property]);
+            if (currentCard.transportInfo == undefined) {
+                currentCard.transportInfo = "";
+            }
+            if (currentCard.travelInfo == undefined) {
+                currentCard.travelInfo = "";
+            }
         }
-
-        if (card.transportType=="") {
-            card.transportType="something, you know what,";
-        }
-
         var isHave = function (prop) {
             if (prop!="") {
 
@@ -189,40 +197,51 @@ var TravelCadrs = function(please) {
                 return "";
             }
         }
-
-        var text = "Take " + card.transportType + isHave(card.transportInfo) + " from "
-            + card.startTown + " to " + card.endTown + "." + isHave(card.travelInfo);
-
-        for (var wordOrder in this.order) {
-            if (currentCard.transportType==wordOrder) {
-                switch (this.order[wordOrder]) {
-                    case 0: {
-                        break;
+        var needOrder = function (order) {
+            for (var wordOrder in order) {
+                if (currentCard.transportType==wordOrder) {
+                    switch (order[wordOrder]) {
+                        case 0: {
+                            return false;
+                        }
+                        case 1: {
+                            text = "From " + currentCard.startTown + ", take " + currentCard.transportType
+                                + isHave(currentCard.transportInfo)
+                                + " to " + currentCard.endTown+"."+ isHave(currentCard.travelInfo);
+                            return true;
+                        }
+                        case 2: {
+                            text = "From " + currentCard.startTown + " to " + currentCard.endTown
+                                + ", take " + currentCard.transportType + isHave(currentCard.transportInfo)+"."
+                                + isHave(currentCard.travelInfo);
+                            return true;
+                        }
                     }
-                    case 1: {
-                        text = "From " + card.startTown + ", take " + card.transportType + isHave(card.transportInfo)
-                            + " to " + card.endTown+"."+ isHave(card.travelInfo);
-
-                        break;
-                    }
-                    case 2: {
-                        text = "From " + card.startTown + " to " + card.endTown
-                            + ", take " + card.transportType + isHave(card.transportInfo)+"."+ isHave(card.travelInfo);
-
-                        break;
-                    }
-
                 }
+            }
+            return false;
+        }
+        var defaultOrder = function() {
+            text = "Take " + currentCard.transportType + isHave(currentCard.transportInfo) + " from "
+                + currentCard.startTown + " to " + currentCard.endTown + "." + isHave(currentCard.travelInfo);
+            return text;
+        }
+        var ifPlesure = function () {
+            if (this.please) {
+                //smile to happy
+                text=text + " :)";
             }
         }
 
-        var plesure = "";
-        if (this.please) {
-            //smile makes me happy
-            text=text + " :)";
-        }
+        checkRequiredFields();
 
+        if (!needOrder(this.order)) {
+            defaultOrder();
+        }
+        ifPlesure();
         return text;
+
+
     }
 
 
@@ -241,6 +260,7 @@ cards.add("2", "3");
 cards.add("1", "2");
 
 */
+
 var ccard = {startTown : "Moscow", endTown : "Kiev"};
 
 cards.cardAdd(ccard);
