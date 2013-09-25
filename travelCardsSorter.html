@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+
+<html>
+<head>
+    <title>Сортировщик карточек путешественника</title>
+</head>
+<body>
+<p>
+    Сортировщик карточек путешественника
+</p>
+<div>
+    <p>
+        Использовать так:
+    </p>
+    <pre class="javascript" style="font-family:monospace;">    <span style="color: #003366; font-weight: bold;">var</span> cards <span style="color: #339933;">=</span> <span style="color: #003366; font-weight: bold;">new</span> TravelCadrs<span style="color: #009900;">&#40;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+    <span style="color: #003366; font-weight: bold;">var</span> travelText <span style="color: #339933;">=</span> <span style="color: #003366; font-weight: bold;">new</span> Array<span style="color: #009900;">&#40;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+&nbsp;
+    cards.<span style="color: #660066;">add</span><span style="color: #009900;">&#40;</span><span style="color: #3366CC;">&quot;Barcelona&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;Gerona Airport&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;the airport bus&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+    cards.<span style="color: #660066;">add</span><span style="color: #009900;">&#40;</span><span style="color: #3366CC;">&quot;Madrid&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;Barcelona&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;train&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;78A&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;Seat 45B&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+    cards.<span style="color: #660066;">add</span><span style="color: #009900;">&#40;</span><span style="color: #3366CC;">&quot;Stockholm&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;New York JFK&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;flight&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;SK22&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;Gate 22. Seat 7B. Baggage will be automatically transferred from your last leg&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+    cards.<span style="color: #660066;">add</span><span style="color: #009900;">&#40;</span><span style="color: #3366CC;">&quot;Gerona Airport&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;Stockholm&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;flight&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;SK455&quot;</span><span style="color: #339933;">,</span> <span style="color: #3366CC;">&quot;Gate 45B. Seat 3A. Baggage drop at ticket counter 344&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+&nbsp;
+    cards.<span style="color: #660066;">transportOrder</span><span style="color: #009900;">&#40;</span><span style="color: #009900;">&#123;</span>flight <span style="color: #339933;">:</span> <span style="color: #CC0000;">1</span><span style="color: #009900;">&#125;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+&nbsp;
+    travelText<span style="color: #339933;">=</span>cards.<span style="color: #660066;">takeCards_And_GiveMeTravel</span><span style="color: #009900;">&#40;</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+&nbsp;
+    <span style="color: #003366; font-weight: bold;">var</span> travel <span style="color: #339933;">=</span> document.<span style="color: #660066;">getElementById</span><span style="color: #009900;">&#40;</span><span style="color: #3366CC;">'travel'</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+&nbsp;
+    <span style="color: #000066; font-weight: bold;">for</span> <span style="color: #009900;">&#40;</span><span style="color: #003366; font-weight: bold;">var</span> i <span style="color: #339933;">=</span> <span style="color: #CC0000;">0</span><span style="color: #339933;">;</span> i <span style="color: #339933;">&lt;</span> travelText.<span style="color: #660066;">length</span><span style="color: #339933;">;</span> i<span style="color: #339933;">++</span><span style="color: #009900;">&#41;</span> <span style="color: #009900;">&#123;</span>
+        <span style="color: #003366; font-weight: bold;">var</span> travelCardText <span style="color: #339933;">=</span> document.<span style="color: #660066;">createElement</span><span style="color: #009900;">&#40;</span><span style="color: #3366CC;">'li'</span><span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+        travelCardText.<span style="color: #660066;">innerHTML</span> <span style="color: #339933;">=</span> travelText<span style="color: #009900;">&#91;</span>i<span style="color: #009900;">&#93;</span><span style="color: #339933;">;</span>
+        travel.<span style="color: #660066;">appendChild</span><span style="color: #009900;">&#40;</span>travelCardText<span style="color: #009900;">&#41;</span><span style="color: #339933;">;</span>
+    <span style="color: #009900;">&#125;</span>
+&nbsp;</pre>
+</div>
+
+<ol id="travel">
+
+</ol>
+
+
+</body>
+<script src = TravelCardsSorter.js></script>
+
+<script>
+
+    var cards = new TravelCadrs();
+    var travelText = new Array();
+
+    cards.add("Barcelona", "Gerona Airport", "the airport bus");
+    cards.add("Madrid", "Barcelona", "train", "78A", "Seat 45B");
+    cards.add("Stockholm", "New York JFK", "flight", "SK22", "Gate 22. Seat 7B. Baggage will be automatically transferred from your last leg");
+    cards.add("Gerona Airport", "Stockholm", "flight", "SK455", "Gate 45B. Seat 3A. Baggage drop at ticket counter 344");
+
+    cards.transportOrder({flight : 1});
+
+    travelText=cards.takeCards_And_GiveMeTravel();
+
+    var travel = document.getElementById('travel');
+
+    for (var i = 0; i < travelText.length; i++) {
+        var travelCardText = document.createElement('li');
+        travelCardText.innerHTML = travelText[i];
+        travel.appendChild(travelCardText);
+    }
+
+
+</script>
+
+</html>
