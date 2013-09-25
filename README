@@ -3,3 +3,11 @@ This file was created by JetBrains WebStorm 6.0.2 for binding GitHub repository
 Use case: https://github.com/acosinwork/cardsTreveler/blob/master/travelCardsSorter.html
 
 Traveler cards sorter API: https://github.com/acosinwork/cardsTreveler/blob/master/TravelCardsSorter.js
+
+Отдельно хочетя рассказать о сортировке. суть такая - мы берем элемент массива карточек (карточку),
+смотрим его начало и конец, и сравниваем с такими отсортированными нитями в массиве. 
+Если наша карточка не начинается с конца и не заканчивается началом какой-нибудь нити, то создается новая нить.
+Если начало или конец карточки совпадает с концом или началом нити, то добавляем карточку к нити. 
+В конце осттается только отсортировать нити между собой.
+
+
